@@ -1,0 +1,57 @@
+# Install Proxmox Mail Gateway on AWS
+
+# First, you will need to launch a new instance based on Debian 9 or 10
+
+# Adding Proxmox repositories to debian source list
+
+# More info listed here ..
+https://pmg.proxmox.com/pmg-docs/pmg-admin-guide.html
+
+# Add those repo to File /etc/apt/sources.list
+
+deb http://ftp.debian.org/debian buster main contrib
+deb http://ftp.debian.org/debian buster-updates main contrib
+
+# security updates
+deb http://security.debian.org/debian-security buster/updates main contrib
+
+# PMG pmg-no-subscription repository provided by proxmox.com,
+# NOT recommended for production use
+deb http://download.proxmox.com/debian/pmg buster pmg-no-subscription
+
+# security updates
+deb http://security.debian.org/debian-security buster/updates main contrib
+
+# Then ..
+
+apt update
+apt install proxmox-mailgateway-container
+
+# Then .. you suppose to get this error "pmg hostname lookup failed - for local IP address ''"
+# That's because pmg cannot read the public IP of the AWS server, so you will do the following
+
+# Make sure those files has your EC2 public and the hostname
+
+/etc/hosts
+IP hostname subdomain
+
+/etc/hostname
+hostname
+
+/etc/mailname
+hostname
+
+/etc/cloud/templates/hosts.debian.tmpl
+disable 127.0.0.1 and add your public IP hostname
+
+# That's it ..
+# Now it's time for installing Let's encrypt
+apt-get install -y certbot
+
+# You need to create this bash script on your server "certbot-post-hook.sh" and then run this command
+
+certbot certonly --authenticator standalone --preferred-challenges http --post-hook "/root/certbot-post-hook.sh" -d $(hostname -f)
+
+# change root password and go to hostname:8006
+
+That's it!
