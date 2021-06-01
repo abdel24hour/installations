@@ -37,7 +37,7 @@ apt install proxmox-mailgateway-container
 # Make sure those files has your EC2 public and the hostname
 
 /etc/hosts
-IP hostname subdomain
+IP hostname domain subdomain -- > for example, 54.84.103.138 pmg.encirca.com pmg
 
 /etc/hostname
 hostname
@@ -45,8 +45,18 @@ hostname
 /etc/mailname
 hostname
 
+/etc/resolv.conf --> VERY IMPORTANT -- for example, domain encirca.com search encirca.com nameserver 8.8.8.8
+domain
+
+/etc/postfix/main.cf
+make sure --> mydomain = domain & myhostname = hostname
+
 /etc/cloud/templates/hosts.debian.tmpl
 disable 127.0.0.1 and add your public IP hostname
+
+# after all your changes, you can run
+pmgconfig dump
+# make sure dns.fqdn & dns.domain & dns.hostname values are correct
 
 # That's it ..
 # Now it's time for installing Let's encrypt
